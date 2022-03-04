@@ -2,6 +2,7 @@ import requests
 
 from environs import Env
 from telegram import Bot
+from time import sleep
 
 
 if __name__ == "__main__":
@@ -32,7 +33,7 @@ if __name__ == "__main__":
         except requests.exceptions.ReadTimeout:
             pass
         except requests.exceptions.ConnectionError:
-            pass
+            sleep(60)
         else:
             review_response = response.json()
             timestamp = review_response["last_attempt_timestamp"]
