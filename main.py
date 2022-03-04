@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     dvmn_api_token = env("DVMN_API_TOKEN")
     tg_bot_token = env("TG_BOT_TOKEN")
-    chat_id = env("CHAT_ID")
+    tg_chat_id = env("TG_CHAT_ID")
     reviews_endpoint = "https://dvmn.org/api/user_reviews/"
     long_polling_endpoint = "https://dvmn.org/api/long_polling/"
 
@@ -52,4 +52,4 @@ if __name__ == "__main__":
                                    f"приступать к следующему уроку! 🔥"
 
                     bot.send_message(text=f"Работа «{title}» проверена!\n\n{msg_tail}",
-                                     chat_id=chat_id)
+                                     chat_id=tg_chat_id)
