@@ -36,10 +36,11 @@ if __name__ == "__main__":
             sleep(60)
         else:
             review_response = response.json()
-            timestamp = review_response["last_attempt_timestamp"]
-            params = {"timestamp": timestamp}
+            if review_response["status"] == "timeout":
+                timestamp = review_response["timestamp_to_request"]
 
-            if review_response["status"] == "found":
+            elif review_response["status"] == "found":
+                timestamp = review_response["last_attempt_timestamp"]
                 reviewed_lessons = review_response["new_attempts"]
                 for lesson in reviewed_lessons:
                     title = lesson["lesson_title"]
@@ -53,3 +54,5 @@ if __name__ == "__main__":
 
                     bot.send_message(text=f"Работа «{title}» проверена!\n\n{msg_tail}",
                                      chat_id=tg_chat_id)
+
+            params = {"timestamp": timestamp}
