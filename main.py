@@ -1,3 +1,4 @@
+import logging
 import requests
 
 from environs import Env
@@ -8,6 +9,8 @@ from time import sleep
 if __name__ == "__main__":
     env = Env()
     env.read_env()
+
+    logging.basicConfig(level=logging.DEBUG)
 
     dvmn_api_token = env("DVMN_API_TOKEN")
     tg_bot_token = env("TG_BOT_TOKEN")
@@ -24,6 +27,7 @@ if __name__ == "__main__":
     bot = Bot(token=tg_bot_token)
 
     while True:
+        logging.info("Бот запущен")
         try:
             response = requests.get(long_polling_endpoint,
                                     headers=headers,
