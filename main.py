@@ -6,16 +6,37 @@ from telegram import Bot
 from time import sleep
 
 
+class TelegramLogsHandler(logging.Handler):
+
+    def __init__(self, tg_bot, chat_id):
+        super().__init__()
+        self.chat_id = chat_id
+        self.tg_bot = tg_bot
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
+
+
+def add_logger(tg_bot, tg_chat_id):
+    logger = logging.getLogger("Logger")
+    logger.setLevel(level=logging.INFO)
+    logger.addHandler(TelegramLogsHandler(tg_bot, tg_chat_id))
+    return logger
+
+
 if __name__ == "__main__":
     env = Env()
     env.read_env()
-
-    logging.basicConfig(level=logging.DEBUG)
 
     dvmn_api_token = env("DVMN_API_TOKEN")
     tg_bot_token = env("TG_BOT_TOKEN")
     tg_chat_id = env("TG_CHAT_ID")
     long_polling_endpoint = "https://dvmn.org/api/long_polling/"
+
+    bot = Bot(token=tg_bot_token)
+    logger = add_logger(bot, tg_chat_id)
+    logger.info("Бот запущен")
 
     headers = {
         "Authorization": f"Token {dvmn_api_token}"
@@ -24,17 +45,15 @@ if __name__ == "__main__":
         "timestamp": 0,
     }
 
-    bot = Bot(token=tg_bot_token)
-
     while True:
-        logging.info("Бот запущен")
         try:
             response = requests.get(long_polling_endpoint,
                                     headers=headers,
                                     params=params,
-                                    timeout=10)
+                                    timeout=60)
             response.raise_for_status()
         except requests.exceptions.ReadTimeout:
+            logger.error("Ошибка бота: ReadTimeout")
             pass
         except requests.exceptions.ConnectionError:
             sleep(60)
