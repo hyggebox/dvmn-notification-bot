@@ -53,9 +53,12 @@ if __name__ == "__main__":
                                     timeout=60)
             response.raise_for_status()
         except requests.exceptions.ReadTimeout:
-            logger.error("Ошибка бота: ReadTimeout")
             pass
         except requests.exceptions.ConnectionError:
+            logger.error("⚠ Ошибка бота: ConnectionError")
+            sleep(60)
+        except Exception as err:
+            logger.exception(f"⚠ Ошибка бота:\n\n {err}")
             sleep(60)
         else:
             review_response = response.json()
