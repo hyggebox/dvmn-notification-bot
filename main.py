@@ -21,12 +21,6 @@ class TelegramLogsHandler(logging.Handler):
         self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
-def set_logger(tg_bot, tg_chat_id):
-    logger.setLevel(level=logging.INFO)
-    logger.addHandler(TelegramLogsHandler(tg_bot, tg_chat_id))
-    return logger
-
-
 if __name__ == "__main__":
     env = Env()
     env.read_env()
@@ -37,7 +31,8 @@ if __name__ == "__main__":
     long_polling_endpoint = "https://dvmn.org/api/long_polling/"
 
     bot = Bot(token=tg_bot_token)
-    logger = set_logger(bot, tg_chat_id)
+    logger.setLevel(level=logging.INFO)
+    logger.addHandler(TelegramLogsHandler(bot, tg_chat_id))
     logger.info("Бот запущен")
 
     headers = {
