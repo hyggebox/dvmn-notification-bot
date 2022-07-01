@@ -28,3 +28,18 @@ pip install -r requirements.txt
 python main.py
 ```
 
+## Запуск на локальной машине с помощью Docker
+
+Для запуска следующих команд, [Docker](https://docs.docker.com/get-docker/) должен быть уже установлен.
+
+Для создания образа перейдите в папку скрипта и запустите команду, заменив NAME
+произвольным названием:
+```commandline
+docker build -t NAME
+```
+
+Создайте и запустите контейнер следующей командой, заменив NAME на выбранное ранее название и 
+указав путь к файлу с переменными окружения (PATH_TO_FILE):
+```commandline
+docker run --env-file PATH_TO_FILE NAME
+```
